@@ -19,10 +19,8 @@ class IBapi(EWrapper, EClient):
         print(f'Time: {bar.date} Close: {bar.close}')
         app.data.append([bar.date, bar.close])
 
-
 def run_loop():
     app.run()
-
 
 app = IBapi()
 app.connect('127.0.0.1', 7497, 123)
