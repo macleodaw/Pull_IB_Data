@@ -11,12 +11,6 @@ import pandas
 data=[]
 data = pd.read_csv (r'tickers.csv')
 
-
-
-
-
-
-
 class IBapi(EWrapper, EClient):
     def __init__(self):
         EClient.__init__(self, self)
