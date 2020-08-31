@@ -1,39 +1,43 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 full_dataframe=[]
 data = pd.read_csv(r'LSE_Financials_FTSE100.csv')
+print(data)
 
 #controls
 slice_by='Sector'
 variable_to_search=' Industrials '
+
+#slicing the data, uncomment to slice
+data_v2=data[data[slice_by] == variable_to_search]
+#data_v2=data
+
+#fundamental to look at
 Fundamental='Dividend_per_Share'
 
-#slicing the data
-data=data[data[slice_by] == variable_to_search]
-data=data[['EPIC','Company_Name','Sector','SubSector','Financial_YE','Curreny',Fundamental]]
+#append data onto data set for reduced set
+data_v2=data_v2[['EPIC','Company_Name','Sector','SubSector','Financial_YE','Curreny',Fundamental]]
+print(data_v2)
 
-#print(data)
-dps=data[[Fundamental]]
 
-x_axis=list(range(0, 50))
-y_axis=list(range(1, 85))
+#extract data for the date specified
+data_v3=data_v2
+#data_v3=data_v2[data_v2['Financial_YE'] == '31/12/2019']
+print(data_v3)
 
-new_list = []
-count = 0
-print(len(dps))
+#replace empty celss with -
+y = data_v3['Dividend_per_Share'].replace('-','0')
 
-while (count <= 10):
-    dps_ind=(dps.iloc[count,0])
-    if dps_ind == "-":
-        dps_ind=0
-    dps_ind = float(dps_ind)
-    new_list.append(dps)
-    count=count+1
+#convert string data to a float
+y = y.astype('float')
 
-print(new_list)
-print(len(new_list))
-#plt.scatter(x_axis,new_list)
-#plt.show()
+#plot the graph
+plt.plot(data_v3['Company_Name'],y,'ro')
+plt.xticks(rotation=90)
+plt.show()
+
+#get some stats
+print(data_v3['Dividend_per_Share'].describe())
 
