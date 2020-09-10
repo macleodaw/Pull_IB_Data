@@ -58,10 +58,10 @@ for names_single in names_group:
     new_df = new_df.append(new_row, ignore_index=True)
 
 print(new_df['EPIC'])
-
+ticker='MRO'
 #if outlier remove it
 new_df.drop(new_df[new_df['EPIC'] == '31/12/2015'].index, inplace = True)
-data_v2.drop(data_v2[data_v2['EPIC'] == 'MRO'].index, inplace = True)
+data_v2.drop(data_v2[data_v2['EPIC'] == ticker].index, inplace = True)
 
 #set up the subplot
 fig, axs = plt.subplots(3, 1, constrained_layout=True)
@@ -84,4 +84,5 @@ axs[2].set_xlabel('EPIC')
 axs[2].set_ylabel('Payout ratios variance')
 
 plt.show()
+
 

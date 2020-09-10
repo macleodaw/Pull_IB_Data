@@ -5,12 +5,13 @@ data = pd.read_csv(r'LSE_Financials_FTSE100.csv')
 price=pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\FTSEPriceHistory.csv')
 
 #controls to search data
+#problem sectors
 slice_by='Sector'
-variable_to_search=' Industrials '
+variable_to_search=' Technology '
 
 #slicing the data, uncomment to slice
-data_v2=data[data[slice_by] == variable_to_search]
-
+#data_v2=data[data[slice_by] == variable_to_search]
+data_v2=data
 #fundamental to look at
 Fundamental='Dividend_per_Share'
 Fundamental2='EPS_Basic_from_Continued_Ops'
@@ -43,7 +44,11 @@ for single_name in names_group:
         variable_to_search2 = dates_single
 
         # this extracts the data based on name
+        print(single_name)
+        print('first data')
+        print(variable_to_search2)
         price_at_YE = interested_price[interested_price[slice_by] == variable_to_search2]
+
         # this checks for empty, likley if it falls on the weekedn and then moves back two days
         new_date=dates_single
         if price_at_YE.empty:
@@ -52,31 +57,64 @@ for single_name in names_group:
             month = int(str(variable_to_search2)[3:5])
             year = int(str(variable_to_search2)[6:10])
             # moves the day back two days so it's a weekday with prices
-            new_day = day - 2
-            # adds in leading zero if it's missing for the month
+            new_day = day - 1
             if month < 10:
-                new_date = (str(new_day) + '/0' + str(month) + '/' + str(year))
-            else:
-                new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
-            # use the new date to search the prices info
+                print('for month')
+                month='0' + str(month)
+                print(month)
+            if new_day < 10:
+                print('for day')
+                new_day ='0' + str(new_day)
+
+            new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
+
             variable_to_search3 = new_date
+            print('second date')
+            print(variable_to_search3)
             price_at_YE = interested_price[interested_price[slice_by] == variable_to_search3]
             # this checks if still empty, likley if it falls on the weekend and then moves back 3
+            if price_at_YE.empty:
+                new_day = day - 2
+                if new_day < 1:
+                    new_day = day + 2
+                # adds in leading zero if it's missing for the month
+                month=int(month)
+                new_day=int(new_day)
+                print(month)
+                if month < 10:
+                    month = '0' + str(month)
+                if new_day < 10:
+                    new_day = '0' + str(new_day)
+
+                new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
+
+            variable_to_search4 = new_date
+            print('third date')
+            print(variable_to_search4)
+
+            price_at_YE = interested_price[interested_price[slice_by] == variable_to_search4]
+
+            #loop again for anotherinteration
             if price_at_YE.empty:
                 new_day = day - 3
                 if new_day < 1:
                     new_day = day + 3
                 # adds in leading zero if it's missing for the month
+                month=int(month)
+                new_day=int(new_day)
+                print(month)
                 if month < 10:
-                    new_date = (str(new_day) + '/0' + str(month) + '/' + str(year))
-                else:
-                    new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
+                    month = '0' + str(month)
                 if new_day < 10:
-                    new_date = '0' + (str(new_day) + '/0' + str(month) + '/' + str(year))
-                # use the new date to search the prices info
-                variable_to_search3 = new_date
+                    new_day = '0' + str(new_day)
 
-                price_at_YE = interested_price[interested_price[slice_by] == variable_to_search3]
+                new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
+
+            variable_to_search5 = new_date
+            print('fourth date')
+            print(variable_to_search5)
+            #print(price_at_YE)
+            price_at_YE = interested_price[interested_price[slice_by] == variable_to_search5]
 
         # extract the price data
         price_at_YE = price_at_YE.iloc[0, 1]
@@ -87,8 +125,8 @@ for single_name in names_group:
         new_df = new_df.append(new_row, ignore_index=True)
 
 print(new_df)
-new_df.to_csv('price.csv')
-
+new_df.to_csv( variable_to_search+' price.csv')
+#new_df.to_csv('All price.csv')
 
 #keep this code as a way to investigate if something is funny with ticker e.g. missing data
 ticker='HLMA'
