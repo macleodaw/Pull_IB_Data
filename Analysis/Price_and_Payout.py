@@ -4,7 +4,7 @@ import os
 import statistics
 
 full_dataframe=[]
-data = pd.read_csv(r'LSE_Financials_FTSE100.csv')
+data = pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\LSE_Financials_FTSE100.csv')
 #print(data)
 
 #controls
@@ -13,10 +13,15 @@ variable_to_search=' Industrials '
 
 #Create new folder for sector
 #strip removes what's at the strat of the folder name
+folder_name_sector=variable_to_search.strip()
+sector_path = r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data'
+sector_path=os.path.join(sector_path, '')+folder_name_sector
+if not os.path.exists(sector_path):
+    os.makedirs(sector_path)
 
 #slicing the data, uncomment to slice
 data_v2=data[data[slice_by] == variable_to_search]
-data_v2=data
+#data_v2=data
 
 #fundamental to look at
 Fundamental='Dividend_per_Share'
@@ -61,7 +66,7 @@ data_v2["payout_ratio"] = y/y2
 #print(data_v2)
 
 #extract the price info
-price = pd.read_csv(r'price.csv')
+price = pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\price.csv')
 #get the names in the sliced subset
 names=data_v2['EPIC']
 
@@ -98,3 +103,50 @@ for single_name in names_group:
     ticker = single_name
     data = interested_price[interested_price['EPIC'] == ticker]
     print(data)
+
+    #this will loop through each fundamental to print
+    for fundamental in df_fund:
+        print(data[fundamental])
+
+
+        # create figure and axis objects with subplots()
+
+        #controls the size
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        # make a plot
+        ax.plot(data['Financial_YE'], data['Price'], color="red", marker="o", label="Price")
+        # set x-axis label
+        ax.set_xlabel("year", fontsize=14)
+        # set y-axis label
+        ax.set_ylabel("Price [p]", color="red", fontsize=14)
+
+        # twin object for two different y-axis on the sample plot
+        ax2 = ax.twinx()
+        # make a plot with different y-axis using second axis object
+        ax2.plot(data['Financial_YE'], data[fundamental], color="blue", marker="o", label="Payout")
+        ax2.set_ylabel(fundamental, color="blue", fontsize=14)
+        ax.set_title(fundamental+' and Price: ' + ticker, horizontalalignment='center', verticalalignment='top')
+
+        # save analysis is folder
+
+        sector_path = r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data'
+        sector_path = os.path.join(sector_path, '') + folder_name_sector
+        ticker_path = os.path.join(sector_path, '') + single_name
+        if not os.path.exists(ticker_path):
+            os.makedirs(ticker_path)
+
+        plt.savefig(os.path.join(ticker_path, '') + fundamental +' vs price ' + ticker + '.png')
+        print(os.path.join(ticker_path, '') + fundamental +'payout ratio vs price ' + ticker + '.png')
+
+        #plt.show()
+        #plt.pause(3)
+        plt.close()
+
+
+
+
+
+
+
+

@@ -1,8 +1,8 @@
 import pandas as pd
 
 #load data
-data = pd.read_csv(r'LSE_Financials_FTSE100.csv')
-price=pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\FTSEPriceHistory.csv')
+data = pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\LSE_Financials_FTSE100.csv')
+price=pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\FTSEPriceHistory.csv')
 
 #controls to search data
 #problem sectors
@@ -127,68 +127,3 @@ for single_name in names_group:
 print(new_df)
 new_df.to_csv( variable_to_search+' price.csv')
 #new_df.to_csv('All price.csv')
-
-#keep this code as a way to investigate if something is funny with ticker e.g. missing data
-ticker='HLMA'
-AHT=data_v2[data_v2['EPIC'] == ticker]
-AHT_date=AHT['Financial_YE']
-
-#makes data set to for price
-AHT_price=price[['date',ticker]]
-
-#new data set to store info
-new_df1 = pd.DataFrame(columns=['EPIC', 'YE date','Price','Price date'])
-
-for dates_single in AHT_date:
-    #This says what we're searching by
-    slice_by = 'date'
-    #from the loop set up it will go through all these single names
-    variable_to_search2 = dates_single
-
-    #this extracts the data based on name
-    price_at_YE = AHT_price[AHT_price[slice_by] == variable_to_search2]
-    #this checks for empty, likley if it falls on the week and then moves back two days
-    if price_at_YE.empty:
-        #converts the missing entry
-        day=int(str(variable_to_search2)[:2])
-        month=int(str(variable_to_search2)[3:5])
-        year=int(str(variable_to_search2)[6:10])
-        #moves the day back two days so it's a weekday with prices
-        new_day=day-2
-        if new_day < 1:
-            new_day = day + 2
-        #adds in leading zero if it's missing for the month
-        if month<10:
-            new_date = (str(new_day) + '/0' + str(month) + '/' + str(year))
-        else:
-            new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
-        if new_day<10:
-            new_date = '0' + (str(new_day) + '/' + str(month) + '/' + str(year))
-        #use the new date to search the prices info
-        variable_to_search3 = new_date
-        #print(new_date)
-        price_at_YE = AHT_price[AHT_price[slice_by] == variable_to_search3]
-        if price_at_YE.empty:
-            new_day = day - 3
-            if new_day < 1:
-                new_day = day + 3
-            # adds in leading zero if it's missing for the month
-            if month < 10:
-                new_date = (str(new_day) + '/0' + str(month) + '/' + str(year))
-            else:
-                new_date = (str(new_day) + '/' + str(month) + '/' + str(year))
-            if new_day < 10:
-                new_date = '0' + (str(new_day) + '/0' + str(month) + '/' + str(year))
-            # use the new date to search the prices info
-            variable_to_search3 = new_date
-
-            price_at_YE = AHT_price[AHT_price[slice_by] == variable_to_search3]
-
-
-    #extract the price data
-    price_at_YE=price_at_YE.iloc[0,1]
-    #creats a row to add to the data frame
-    new_row1 = {'EPIC': ticker, 'YE date': dates_single, 'Price': price_at_YE, 'Price date':new_date}
-    #adds to data frame
-    new_df1 = new_df1.append(new_row1, ignore_index=True)
-

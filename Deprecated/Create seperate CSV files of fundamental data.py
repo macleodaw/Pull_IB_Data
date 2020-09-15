@@ -1,9 +1,7 @@
 import pandas as pd
 from pandas import DataFrame
 
-full_dataframe=[]
-data = pd.read_csv (r'LSE_Financials_FTSE100.csv')
-#print(data)
+data = pd.read_csv (r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\LSE_Financials_FTSE100.csv')
 
 headers=list(data)
 headers = DataFrame(headers)
@@ -14,7 +12,6 @@ Name = data.loc[:,"Company_Name"]
 FinancialYE = data.loc[:,"Financial_YE"]
 Currency=data.loc[:,"Curreny"]
 Base=pd.concat([EPIC, Name,FinancialYE,Currency], axis=1)
-#print(Base)
 
 count = 6
 while (count < (headers.shape[0]-1)): #headers.shape[0]):

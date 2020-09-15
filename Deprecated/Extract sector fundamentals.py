@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 full_dataframe=[]
-data = pd.read_csv(r'LSE_Financials_FTSE100.csv')
+data = pd.read_csv(r'C:\Users\Allan W MacLeod\PycharmProjects\Pull_IB_Data\CSV database\LSE_Financials_FTSE100.csv')
 print(data)
 
 #controls
